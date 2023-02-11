@@ -1,0 +1,23 @@
+name: wallkick
+version: '${version}'
+main: jp.momonnga.wallkick.WallKick
+api-version: 1.19
+author: momonnga
+
+commands:
+  wallkick:
+    description: "Commands to change settings related to wallkick."
+    usage: "/wallkick [enable/disable/vertical/maxcombo] [*layerId(enable/disable option),enable/disable(vertical option),int(maxcombo option)]"
+    permission: op
+    permission-message: "You don't have permission to use wallkick commands."
+    aliases: wk
+
+permissions:
+  wallkick.wallkicker:
+    description: "Owner can kick wall."
+    default: false
+  wallkick.verticalkick:
+    description: "Owner can kick wall. vertically"
+    default: false
+
+
