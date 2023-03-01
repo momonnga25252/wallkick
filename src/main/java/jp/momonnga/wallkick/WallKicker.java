@@ -238,6 +238,17 @@ public class WallKicker implements Player {
     }
 
     @Override
+    public String toString() {
+        return "WallKicker{" +
+                "player=" + player +
+                ", maxKickCombo=" + maxKickCombo +
+                ", kickCombo=" + kickCombo +
+                ", footReach=" + footReach +
+                ", wallHeight=" + wallHeight +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         return Objects.equals(getPlayer(), o);
@@ -523,6 +534,11 @@ public class WallKicker implements Player {
     @Override
     public void sendEquipmentChange(LivingEntity entity, EquipmentSlot slot, ItemStack item) {
         player.sendEquipmentChange(entity, slot, item);
+    }
+
+    @Override
+    public void sendEquipmentChange(LivingEntity entity, Map<EquipmentSlot, ItemStack> items) {
+        player.sendEquipmentChange(entity, items);
     }
 
     @Override
