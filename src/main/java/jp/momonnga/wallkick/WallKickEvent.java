@@ -4,6 +4,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Holds information for wallkick events
@@ -24,6 +25,7 @@ public class WallKickEvent extends Event implements Cancellable {
         this.kickVector = kickVector;
     }
 
+    @NotNull
     @Override
     public HandlerList getHandlers() {
         return HANDLERS;
