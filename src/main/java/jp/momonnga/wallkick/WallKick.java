@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -34,87 +35,87 @@ public final class WallKick extends JavaPlugin implements Listener {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
             if (args.length == 0) return false;
-            if (sender instanceof Player player) {
+            if (sender instanceof Player senderPlayer) {
                 return switch (args[0]) {
                     case "enable" -> {
                         if (args.length == 1) {
-                            player.addAttachment(this).setPermission(WallKicker.WALLKICKER_PERMISSION, true);
-                            sendPluginMessage(player, "Permissions have been added to the player.");
+                            senderPlayer.addAttachment(this).setPermission(WallKicker.WALLKICKER_PERMISSION, true);
+                            sendPluginMessage(senderPlayer, "Permissions have been added to the player.");
                         } else {
                             String playerId = args[1];
                             Player target = getServer().getPlayer(playerId);
                             if (target != null) {
                                 target.addAttachment(this).setPermission(WallKicker.WALLKICKER_PERMISSION, true);
-                                sendPluginMessage(player, "Permissions have been added to the player.");
+                                sendPluginMessage(senderPlayer, "Permissions have been added to the player.");
                                 sendPluginMessage(target, "Permission was granted to kick the wall.");
                             } else {
-                                sendPluginMessage(player, RED + "Player ID does not exist.");
+                                sendPluginMessage(senderPlayer, RED + "Player ID does not exist.");
                             }
                         }
                         yield true;
                     }
                     case "disable" -> {
                         if (args.length == 1) {
-                            player.addAttachment(this).setPermission(WallKicker.WALLKICKER_PERMISSION, false);
-                            sendPluginMessage(player, "Permission to kick the wall has been revoked.");
+                            senderPlayer.addAttachment(this).setPermission(WallKicker.WALLKICKER_PERMISSION, false);
+                            sendPluginMessage(senderPlayer, "Permission to kick the wall has been revoked.");
                         } else {
                             String playerId = args[1];
                             Player target = getServer().getPlayer(playerId);
                             if (target != null) {
                                 target.addAttachment(this).setPermission(WallKicker.WALLKICKER_PERMISSION, false);
-                                sendPluginMessage(player, "The player's permission revoked.");
+                                sendPluginMessage(senderPlayer, "The player's permission revoked.");
                                 sendPluginMessage(target, "Permission to kick the wall has been revoked.");
                             } else {
-                                sendPluginMessage(player, RED + "Player ID does not exist.");
+                                sendPluginMessage(senderPlayer, RED + "Player ID does not exist.");
                             }
                         }
                         yield true;
                     }
                     case "vertical" -> {
                         if (args.length == 1) {
-                            sendPluginMessage(player, RED + "The command argument is invalid.");
+                            sendPluginMessage(senderPlayer, RED + "The command argument is invalid.");
                         } else {
-                            Player target = player;
+                            Player target = senderPlayer;
                             if (args.length == 3) {
                                 String playerId = args[2];
                                 target = getServer().getPlayer(playerId);
                                 if (target == null) {
-                                    sendPluginMessage(player, RED + "Player ID does not exist.");
+                                    sendPluginMessage(senderPlayer, RED + "Player ID does not exist.");
                                     yield true;
                                 }
                             }
 
                             if (args[1].equalsIgnoreCase("enable")) {
                                 target.addAttachment(this).setPermission(WallKicker.VERTICALKICK_PERMISSION, false);
-                                sendPluginMessage(player, "Permissions have been added to the player.");
-                                if (!target.equals(player)) {
+                                sendPluginMessage(senderPlayer, "Permissions have been added to the player.");
+                                if (!target.equals(senderPlayer)) {
                                     sendPluginMessage(target, "Permission was granted to kick the wall.");
                                 }
                                 target.addAttachment(this).setPermission(WallKicker.VERTICALKICK_PERMISSION, true);
                             } else if (args[1].equalsIgnoreCase("disable")) {
                                 target.addAttachment(this).setPermission(WallKicker.VERTICALKICK_PERMISSION, false);
-                                sendPluginMessage(player, "The player's permission revoked.");
-                                if (!target.equals(player)) {
+                                sendPluginMessage(senderPlayer, "The player's permission revoked.");
+                                if (!target.equals(senderPlayer)) {
                                     sendPluginMessage(target, "Permission to kick the wall has been revoked.");
                                 }
                             } else {
-                                sendPluginMessage(player, RED + "The command argument is invalid.");
+                                sendPluginMessage(senderPlayer, RED + "The command argument is invalid.");
                             }
                         }
                         yield true;
                     }
                     case "maxcombo" -> {
                         if (args.length == 1) {
-                            sendPluginMessage(player, RED + "The command argument is invalid.");
+                            sendPluginMessage(senderPlayer, RED + "The command argument is invalid.");
                         } else {
-                            WallKicker target = WallKicker.of(player);
+                            WallKicker target = WallKicker.of(senderPlayer);
                             if (args.length == 3) {
                                 String playerId = args[2];
                                 Player targetPlayer = getServer().getPlayer(playerId);
                                 if (targetPlayer == null) {
-                                    sendPluginMessage(player, RED + "Player ID does not exist.");
+                                    sendPluginMessage(senderPlayer, RED + "Player ID does not exist.");
                                     yield true;
                                 }
                                 target = WallKicker.of(targetPlayer);
@@ -123,12 +124,12 @@ public final class WallKick extends JavaPlugin implements Listener {
                                 int maxCombo = Integer.parseInt(args[1]);
                                 int oldMax = target.getMaxKickCombo();
                                 target.setMaxKickCombo(maxCombo);
-                                sendPluginMessage(player, "Max kick combo has been changed. " + oldMax + "→" + maxCombo);
-                                if (!target.equals(player)) {
-                                    sendPluginMessage(target, "Max kick combo has been changed. " + oldMax + "→" + maxCombo);
+                                sendPluginMessage(senderPlayer, "Max kick combo has been changed. " + oldMax + "→" + maxCombo);
+                                if (!target.getPlayer().equals(senderPlayer)) {
+                                    sendPluginMessage(senderPlayer, "Max kick combo has been changed. " + oldMax + "→" + maxCombo);
                                 }
                             }catch (NumberFormatException e) {
-                                sendPluginMessage(player,RED + "The Number is invalid.");
+                                sendPluginMessage(senderPlayer,RED + "The Number is invalid.");
                             }
                         }
                         yield true;
@@ -214,16 +215,16 @@ public final class WallKick extends JavaPlugin implements Listener {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
         if (args.length == 1) {
-            if (args[0].length() == 0) {
+            if (args[0].isEmpty()) {
                 return List.of("enable","disable","vertical","maxcombo");
             } else {
                 return Stream.of("enable","disable","vertical","maxcombo").filter(arg -> arg.startsWith(args[0])).toList();
             }
         } else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("vertical")) {
-                if (args[1].length() == 0) {
+                if (args[1].isEmpty()) {
                     return List.of("enable","disable");
                 } else {
                     return Stream.of("enable","disable").filter(arg -> arg.startsWith(args[1])).toList();
@@ -244,13 +245,14 @@ public final class WallKick extends JavaPlugin implements Listener {
      * Switching the player's allowFlight during wall-kick conditions
      * @param event {@code PlayerMoveEvent}
      */
-    @SuppressWarnings("deprecation")
     @EventHandler
     public void onMoveEvent(PlayerMoveEvent event) {
-        WallKicker kicker = WallKicker.of(event.getPlayer());
-        if (kicker.getGameMode().equals(GameMode.CREATIVE) || kicker.getGameMode().equals(GameMode.SPECTATOR)) return;
-        if (kicker.isWallKicker()) kicker.setAllowFlight(kicker.canKickWall());
-        if (kicker.isOnGround() && kicker.getKickCombo() > 0) kicker.setKickCombo(0);
+        Player player = event.getPlayer();
+        WallKicker kicker = WallKicker.of(player);
+
+        if (player.getGameMode().equals(GameMode.CREATIVE) || player.getGameMode().equals(GameMode.SPECTATOR)) return;
+        if (kicker.isWallKicker()) player.setAllowFlight(kicker.canKickWall());
+        if (WallKickUtil.isOnGround(player) && kicker.getKickCombo() > 0) kicker.setKickCombo(0);
     }
 
 
@@ -261,7 +263,7 @@ public final class WallKick extends JavaPlugin implements Listener {
     @EventHandler
     public void onFlightEvent(PlayerToggleFlightEvent event) {
         WallKicker kicker = WallKicker.of(event.getPlayer());
-        if (kicker.getGameMode().equals(GameMode.CREATIVE) || kicker.getGameMode().equals(GameMode.SPECTATOR)) return;
+        if (kicker.getPlayer().getGameMode().equals(GameMode.CREATIVE) || kicker.getPlayer().getGameMode().equals(GameMode.SPECTATOR)) return;
         if (kicker.canKickWall()) kicker.kickWall();
         event.setCancelled(true);
     }
