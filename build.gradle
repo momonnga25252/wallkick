@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'jp.momonnga'
-version = '1.0.0'
+version = '1.0.1'
 
 tasks.withType(AbstractCompile)*.options*.encoding = 'utf-8'
 
